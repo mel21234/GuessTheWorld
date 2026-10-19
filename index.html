@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rank the World — Put the world in the right order</title>
+  <meta name="description" content="A daily puzzle: put 5 things in the right order. Every number has a real source.">
+  <meta name="theme-color" content="#FFFFFF">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="topbar">
+    <div class="topbar-side">
+      <button class="icon-btn" id="btn-menu" aria-label="Menu" aria-controls="drawer" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-help" aria-label="How to play" data-i18n-aria="howToPlay">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </button>
+    </div>
+    <h1 class="logo">RANK THE WORLD</h1>
+    <div class="topbar-side right">
+      <button class="icon-btn" id="btn-stats" aria-label="Statistics" data-i18n-aria="statistics">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" aria-label="Settings" data-i18n-aria="settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+      <button class="icon-btn lang-btn" id="btn-lang" aria-label="Change language" data-i18n-aria="changeLanguage">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="lang-label">EN</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Main game ===== -->
+  <main class="page" id="app">
+    <p class="puzzle-meta" id="puzzle-meta"></p>
+    <div class="archive-bar" id="archive-bar" hidden>
+      <span class="archive-label" id="archive-label">From the archive</span>
+      <button class="text-btn" id="btn-today" type="button">Back to today's puzzle</button>
+    </div>
+
+    <section class="card category-card">
+      <p class="eyebrow" data-i18n="todaysRanking">Today's ranking</p>
+      <h2 class="question" id="question"></h2>
+      <p class="metric" id="metric"></p>
+    </section>
+
+    <div class="history" id="history" aria-label="Previous attempts"></div>
+
+    <p class="axis-label" data-i18n="most">MOST ↑</p>
+    <ol class="rank-list" id="rank-list" aria-label="Ranking list"></ol>
+    <p class="axis-label" data-i18n="least">LEAST ↓</p>
+
+    <div class="controls" id="controls">
+      <div class="attempts" id="attempts" aria-live="polite"></div>
+      <button class="primary-btn" id="btn-submit" data-i18n="submit">Submit</button>
+      <p class="hint" id="hint" data-i18n="dragHint">Drag the cards, or use the arrows, then press Submit.</p>
+    </div>
+
+    <!-- Reveal appears here when the game is over -->
+    <section id="reveal" class="reveal" hidden></section>
+
+    <section class="countdown" id="countdown-box">
+      <p class="countdown-label" data-i18n="nextPuzzle">Next puzzle in</p>
+      <p class="countdown-time" id="countdown">--:--:--</p>
+      <p class="countdown-sub" data-i18n="atMidnight">at 00:00 your time</p>
+    </section>
+  </main>
+
+  <!-- ===== Side menu with the archive calendar ===== -->
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden>
+    <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="drawer-title">
+      <div class="drawer-top">
+        <p class="drawer-brand">RANK THE WORLD</p>
+        <button class="modal-close drawer-close" id="drawer-close" type="button" aria-label="Close menu">✕</button>
+      </div>
+      <h2 id="drawer-title">Puzzle archive</h2>
+      <p class="drawer-desc" id="drawer-desc">Missed a day? Pick any earlier puzzle.</p>
+      <div class="calendar">
+        <div class="cal-nav">
+          <button class="icon-btn" id="cal-prev" type="button" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <p class="cal-month" id="cal-month"></p>
+          <button class="icon-btn" id="cal-next" type="button" aria-label="Next month">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend" id="cal-legend"></div>
+      </div>
+      <nav class="drawer-links">
+        <button type="button" data-open="modal-help" data-i18n="howToPlay">How to play</button>
+        <button type="button" data-open="modal-stats" data-i18n="statistics">Statistics</button>
+        <button type="button" data-open="modal-settings" data-i18n="settings">Settings</button>
+        <button type="button" data-open="modal-about" data-i18n="aboutData">About our data</button>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- ===== Modals ===== -->
+  <div class="modal-backdrop" id="modal-account" hidden>
+    <div class="modal account-modal" role="dialog" aria-modal="true" aria-labelledby="account-title">
+      <div id="account-body"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-help" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <button class="modal-close" aria-label="Close" data-close>✕</button>
+      <h2 id="help-title" data-i18n="howToPlay">How to play</h2>
+      <div id="help-body"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-stats" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="stats-title">
+      <button class="modal-close" aria-label="Close" data-close>✕</button>
+      <h2 id="stats-title" data-i18n="statistics">Statistics</h2>
+      <div id="stats-body"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-settings" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <button class="modal-close" aria-label="Close" data-close>✕</button>
+      <h2 id="settings-title" data-i18n="settings">Settings</h2>
+      <div class="setting-row">
+        <div>
+          <p class="setting-name" data-i18n="darkMode">Dark mode</p>
+        </div>
+        <button class="switch" id="toggle-dark" role="switch" aria-checked="false"><span></span></button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <p class="setting-name" data-i18n="reducedMotion">Reduced motion</p>
+          <p class="setting-desc" data-i18n="reducedMotionDesc">Turns off card flips and shakes</p>
+        </div>
+        <button class="switch" id="toggle-motion" role="switch" aria-checked="false"><span></span></button>
+      </div>
+      <div class="setting-row">
+        <p class="setting-name" data-i18n="aboutData">About our data</p>
+        <button class="text-btn" id="btn-about" data-i18n="read">Read</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-about" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="about-title">
+      <button class="modal-close" aria-label="Close" data-close>✕</button>
+      <h2 id="about-title" data-i18n="aboutData">About our data</h2>
+      <div id="about-body"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="puzzles.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
